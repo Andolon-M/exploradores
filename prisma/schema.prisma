@@ -1,0 +1,342 @@
+generator client {
+  provider   = "prisma-client-js"
+  engineType = "binary"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+model users {
+  id         BigInt    @id @default(autoincrement()) @db.UnsignedBigInt
+  email      String    @unique @db.VarChar(255)
+  password   String    @db.VarChar(255)
+  role_id    BigInt?   @db.UnsignedBigInt
+  created_at DateTime? @db.Timestamp(0)
+  updated_at DateTime? @db.Timestamp(0)
+  deleted_at DateTime? @db.Timestamp(0)
+  role       roles?    @relation(fields: [role_id], references: [id])
+
+  @@index([role_id])
+}
+
+model roles {
+  id                   BigInt                 @id @default(autoincrement()) @db.UnsignedBigInt
+  name                 String                 @unique @db.VarChar(255)
+  created_at           DateTime?              @db.Timestamp(0)
+  updated_at           DateTime?              @db.Timestamp(0)
+  deleted_at           DateTime?              @db.Timestamp(0)
+  users                users[]
+  role_has_permissions role_has_permissions[]
+}
+
+model permissions {
+  id                   BigInt                 @id @default(autoincrement()) @db.UnsignedBigInt
+  action               String                 @db.VarChar(255)
+  resource             String                 @db.VarChar(255)
+  type                 Int                    @default(0)
+  created_at           DateTime?              @db.Timestamp(0)
+  updated_at           DateTime?              @db.Timestamp(0)
+  deleted_at           DateTime?              @db.Timestamp(0)
+  role_has_permissions role_has_permissions[]
+
+  @@unique([resource, action, type])
+}
+
+model role_has_permissions {
+  permission_id BigInt      @db.UnsignedBigInt
+  role_id       BigInt      @db.UnsignedBigInt
+  permissions   permissions @relation(fields: [permission_id], references: [id], onDelete: Cascade)
+  roles         roles       @relation(fields: [role_id], references: [id], onDelete: Cascade)
+
+  @@id([permission_id, role_id])
+  @@index([role_id])
+}
+
+model commanders {
+  id         BigInt       @id @default(autoincrement()) @db.UnsignedBigInt
+  dni        String      @db.VarChar(255)
+  dni_type   IdType
+  dni_type_other String  @db.VarChar(255)
+  first_name String       @db.VarChar(255)
+  cell       String      @db.VarChar(255)
+  last_name  String      @db.VarChar(255)
+  phone      String      @db.VarChar(255)
+  member_id  String?      @db.VarChar(255)
+  status     RecordStatus @default(ACTIVO)
+  created_at DateTime?    @db.Timestamp(0)
+  updated_at DateTime?    @db.Timestamp(0)
+  deleted_at DateTime?    @db.Timestamp(0)
+  school_year_assignments commander_school_year_assignments[]
+
+  @@index([dni])
+  @@index([cell])
+}
+
+model explorers {
+  id             BigInt        @id @default(autoincrement()) @db.UnsignedBigInt
+  parent_id      BigInt       @db.UnsignedBigInt
+  dni_type       IdType
+  dni_type_other String?      @db.VarChar(255)
+  dni            String       @db.VarChar(255)
+  member_id    String?       @db.VarChar(255)
+  phone          String?       @db.VarChar(255)
+  first_name     String?        @db.VarChar(255)
+  last_name      String?       @db.VarChar(255)
+  birthdate      DateTime?     @db.Date
+  gender         Gender?
+  created_at     DateTime?     @db.Timestamp(0)
+  updated_at     DateTime?     @db.Timestamp(0)
+  deleted_at     DateTime?     @db.Timestamp(0)
+  parent         parents?      @relation(fields: [parent_id], references: [id], onDelete: Cascade)
+  enrollments    enrollments[]
+  attendances    attendances[]
+  explorer_session_lessons explorer_session_lessons[]
+
+  @@index([parent_id])
+  @@index([dni])
+}
+
+model parents {
+  id            BigInt      @id @default(autoincrement()) @db.UnsignedBigInt
+  first_name    String     @db.VarChar(255)
+  last_name     String     @db.VarChar(255)
+  dni_type       IdType
+  dni_type_other String     @db.VarChar(255)
+  dni            String      @db.VarChar(255)
+  phone         String     @db.VarChar(255)
+  member_id     String?     @db.VarChar(255)
+  created_at    DateTime?   @db.Timestamp(0)
+  updated_at    DateTime?   @db.Timestamp(0)
+  deleted_at    DateTime?   @db.Timestamp(0)
+  explorers     explorers[]
+
+  @@index([dni])
+  @@index([member_id])
+}
+
+model school_years {
+  id          BigInt        @id @default(autoincrement()) @db.UnsignedBigInt
+  name        String        @unique @db.VarChar(255)
+  created_at  DateTime?     @db.Timestamp(0)
+  updated_at  DateTime?     @db.Timestamp(0)
+  deleted_at  DateTime?     @db.Timestamp(0)
+  enrollments enrollments[]
+  sessions    sessions[]
+  commander_school_year_assignments commander_school_year_assignments[]
+}
+
+model groups {
+  id          BigInt        @id @default(autoincrement()) @db.UnsignedBigInt
+  name        String        @unique @db.VarChar(255)
+  is_explorer Boolean       @default(false)
+  created_at  DateTime?     @db.Timestamp(0)
+  updated_at  DateTime?     @db.Timestamp(0)
+  deleted_at  DateTime?     @db.Timestamp(0)
+  lessons     lessons[]
+  enrollments enrollments[]
+  session_groups session_groups[]
+  commander_school_year_assignments commander_school_year_assignments[]
+}
+
+model paths {
+  id          BigInt        @id @default(autoincrement()) @db.UnsignedBigInt
+  name        String        @unique @db.VarChar(255)
+  created_at  DateTime?     @db.Timestamp(0)
+  updated_at  DateTime?     @db.Timestamp(0)
+  deleted_at  DateTime?     @db.Timestamp(0)
+  lessons     lessons[]
+  enrollments enrollments[]
+}
+
+model lessons {
+  id                   BigInt    @id @default(autoincrement()) @db.UnsignedBigInt
+  name                 String    @db.VarChar(255)
+  code                 String    @unique @db.VarChar(100)
+  year                 Int?
+  term                 Int?
+  path_id              BigInt?   @db.UnsignedBigInt
+  group_id             BigInt    @db.UnsignedBigInt
+  file_url             String    @db.VarChar(2048)
+  created_at           DateTime? @db.Timestamp(0)
+  updated_at           DateTime? @db.Timestamp(0)
+  deleted_at           DateTime? @db.Timestamp(0)
+  path                 paths?    @relation(fields: [path_id], references: [id], onDelete: SetNull)
+  group                groups    @relation(fields: [group_id], references: [id], onDelete: Cascade)
+  session_group_lessons session_group_lessons[]
+
+  @@index([group_id, path_id, year, term])
+}
+
+model sessions {
+  id             BigInt          @id @default(autoincrement()) @db.UnsignedBigInt
+  school_year_id BigInt          @db.UnsignedBigInt
+  session_date   DateTime        @db.Timestamp(0)
+  notes          String?         @db.VarChar(1000)
+  created_at     DateTime?       @db.Timestamp(0)
+  updated_at     DateTime?       @db.Timestamp(0)
+  deleted_at     DateTime?       @db.Timestamp(0)
+  school_year    school_years    @relation(fields: [school_year_id], references: [id], onDelete: Cascade)
+  session_groups session_groups[]
+
+  @@index([school_year_id, session_date])
+}
+
+model session_groups {
+  id                  BigInt                  @id @default(autoincrement()) @db.UnsignedBigInt
+  session_id          BigInt                  @db.UnsignedBigInt
+  group_id            BigInt                  @db.UnsignedBigInt
+  created_at          DateTime?               @db.Timestamp(0)
+  updated_at          DateTime?               @db.Timestamp(0)
+  deleted_at          DateTime?               @db.Timestamp(0)
+  session             sessions                @relation(fields: [session_id], references: [id], onDelete: Cascade)
+  group               groups                  @relation(fields: [group_id], references: [id], onDelete: Cascade)
+  attendances         attendances[]
+  session_group_lessons session_group_lessons[]
+
+  @@unique([session_id, group_id])
+  @@index([group_id])
+}
+
+model session_group_lessons {
+  id                     BigInt                    @id @default(autoincrement()) @db.UnsignedBigInt
+  session_group_id       BigInt                    @db.UnsignedBigInt
+  lesson_id              BigInt                    @db.UnsignedBigInt
+  created_at             DateTime?                 @db.Timestamp(0)
+  updated_at             DateTime?                 @db.Timestamp(0)
+  deleted_at             DateTime?                 @db.Timestamp(0)
+  session_group          session_groups            @relation(fields: [session_group_id], references: [id], onDelete: Cascade)
+  lesson                 lessons                   @relation(fields: [lesson_id], references: [id], onDelete: Cascade)
+  explorer_session_lessons explorer_session_lessons[]
+
+  @@unique([session_group_id, lesson_id])
+  @@index([lesson_id])
+}
+
+model explorer_session_lessons {
+  id                      BigInt                 @id @default(autoincrement()) @db.UnsignedBigInt
+  explorer_id             BigInt                 @db.UnsignedBigInt
+  session_group_lesson_id BigInt                 @db.UnsignedBigInt
+  status                  LessonCoverageStatus   @default(VISTA)
+  observed_at             DateTime?              @db.Timestamp(0)
+  notes                   String?                @db.VarChar(500)
+  created_at              DateTime?              @db.Timestamp(0)
+  updated_at              DateTime?              @db.Timestamp(0)
+  deleted_at              DateTime?              @db.Timestamp(0)
+  explorer                explorers              @relation(fields: [explorer_id], references: [id], onDelete: Cascade)
+  session_group_lesson    session_group_lessons  @relation(fields: [session_group_lesson_id], references: [id], onDelete: Cascade)
+
+  @@unique([explorer_id, session_group_lesson_id])
+  @@index([session_group_lesson_id])
+}
+
+model commander_roles {
+  id          BigInt              @id @default(autoincrement()) @db.UnsignedBigInt
+  name        String              @unique @db.VarChar(255)
+  scope       CommanderRoleScope  @default(SCHOOL_YEAR)
+  created_at  DateTime?           @db.Timestamp(0)
+  updated_at  DateTime?           @db.Timestamp(0)
+  deleted_at  DateTime?           @db.Timestamp(0)
+  assignment_roles commander_school_year_assignment_roles[]
+}
+
+model commander_school_year_assignments {
+  id            BigInt             @id @default(autoincrement()) @db.UnsignedBigInt
+  commander_id  BigInt             @db.UnsignedBigInt
+  school_year_id BigInt            @db.UnsignedBigInt
+  group_id      BigInt?            @db.UnsignedBigInt
+  created_at    DateTime?          @db.Timestamp(0)
+  updated_at    DateTime?          @db.Timestamp(0)
+  deleted_at    DateTime?          @db.Timestamp(0)
+  commander     commanders         @relation(fields: [commander_id], references: [id], onDelete: Cascade)
+  school_year   school_years       @relation(fields: [school_year_id], references: [id], onDelete: Cascade)
+  group         groups?            @relation(fields: [group_id], references: [id], onDelete: SetNull)
+  roles         commander_school_year_assignment_roles[]
+
+  @@unique([commander_id, school_year_id], map: "uniq_commander_year_assignment")
+  @@index([group_id])
+}
+
+model commander_school_year_assignment_roles {
+  assignment_id BigInt                           @db.UnsignedBigInt
+  role_id       BigInt                           @db.UnsignedBigInt
+  created_at    DateTime?                        @db.Timestamp(0)
+  updated_at    DateTime?                        @db.Timestamp(0)
+  deleted_at    DateTime?                        @db.Timestamp(0)
+  assignment    commander_school_year_assignments @relation(fields: [assignment_id], references: [id], onDelete: Cascade)
+  role          commander_roles                  @relation(fields: [role_id], references: [id], onDelete: Cascade)
+
+  @@id([assignment_id, role_id])
+  @@index([role_id])
+}
+
+model enrollments {
+  id             BigInt       @id @default(autoincrement()) @db.UnsignedBigInt
+  explorer_id    BigInt       @db.UnsignedBigInt
+  school_year_id BigInt       @db.UnsignedBigInt
+  group_id       BigInt       @db.UnsignedBigInt
+  path_id        BigInt?      @db.UnsignedBigInt
+  created_at     DateTime?    @db.Timestamp(0)
+  updated_at     DateTime?    @db.Timestamp(0)
+  deleted_at     DateTime?    @db.Timestamp(0)
+  explorer       explorers    @relation(fields: [explorer_id], references: [id], onDelete: Cascade)
+  school_year    school_years @relation(fields: [school_year_id], references: [id], onDelete: Cascade)
+  group          groups       @relation(fields: [group_id], references: [id], onDelete: Cascade)
+  path           paths?       @relation(fields: [path_id], references: [id], onDelete: SetNull)
+
+  @@index([explorer_id, school_year_id])
+  @@index([group_id])
+  @@index([path_id])
+}
+
+model attendances {
+  id               BigInt           @id @default(autoincrement()) @db.UnsignedBigInt
+  session_group_id BigInt           @db.UnsignedBigInt
+  explorer_id      BigInt           @db.UnsignedBigInt
+  status           AttendanceStatus @default(PRESENTE)
+  checked_at       DateTime?        @db.Timestamp(0)
+  notes            String?          @db.VarChar(500)
+  created_at       DateTime?        @db.Timestamp(0)
+  updated_at       DateTime?        @db.Timestamp(0)
+  deleted_at       DateTime?        @db.Timestamp(0)
+  session_group    session_groups   @relation(fields: [session_group_id], references: [id], onDelete: Cascade)
+  explorer         explorers        @relation(fields: [explorer_id], references: [id], onDelete: Cascade)
+
+  @@unique([session_group_id, explorer_id])
+  @@index([explorer_id])
+}
+
+enum Gender {
+  MASCULINO
+  FEMENINO
+}
+
+enum RecordStatus {
+  ACTIVO
+  INACTIVO
+}
+
+enum IdType {
+  DNI
+  CE
+  TI
+  OTHER
+}
+
+enum AttendanceStatus {
+  PRESENTE
+  TARDANZA
+  AUSENTE
+  JUSTIFICADO
+}
+
+enum LessonCoverageStatus {
+  VISTA
+  REPASO
+  PENDIENTE
+}
+
+enum CommanderRoleScope {
+  SCHOOL_YEAR
+  GROUP
+}
