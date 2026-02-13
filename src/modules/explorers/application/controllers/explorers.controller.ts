@@ -26,4 +26,29 @@ export class ExplorersController {
     const result = await ExplorersService.remove(req.params.id);
     res.status(result.status).json(result);
   }
+
+  static async findAllGuardians(_req: Request, res: Response) {
+    const result = await ExplorersService.findAllGuardians();
+    res.status(result.status).json(result);
+  }
+
+  static async findGuardianById(req: Request, res: Response) {
+    const result = await ExplorersService.findGuardianById(req.params.id);
+    res.status(result.status).json(result);
+  }
+
+  static async createGuardian(req: Request, res: Response) {
+    const result = await ExplorersService.createGuardian(req.body);
+    res.status(result.status).json(result);
+  }
+
+  static async updateGuardian(req: Request, res: Response) {
+    const result = await ExplorersService.updateGuardian(req.params.id, req.body);
+    res.status(result.status).json(result);
+  }
+
+  static async removeGuardian(req: Request, res: Response) {
+    const result = await ExplorersService.removeGuardian(req.params.id);
+    res.status(result.status).json(result);
+  }
 }

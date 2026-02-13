@@ -54,6 +54,8 @@ if (isRateLimitEnabled) {
   app.use("/api/auth", authLimiter);
   app.use("/api/explorers", sensitiveApiLimiter);
   app.use("/api/commanders", sensitiveApiLimiter);
+  app.use("/api/users", sensitiveApiLimiter);
+  app.use("/api/groups", sensitiveApiLimiter);
   app.use("/api", generalLimiter);
 }
 

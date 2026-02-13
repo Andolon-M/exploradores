@@ -28,7 +28,9 @@ const options: swaggerJsdoc.Options = {
   apis: [
     "./src/modules/auth/routers/*.ts",
     "./src/modules/explorers/routers/*.ts",
-    "./src/modules/commanders/routers/*.ts"
+    "./src/modules/commanders/routers/*.ts",
+    "./src/modules/users/routers/*.ts",
+    "./src/modules/groups/routers/*.ts"
   ]
 };
 

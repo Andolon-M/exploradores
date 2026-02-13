@@ -75,7 +75,7 @@ model commanders {
 
 model explorers {
   id             BigInt        @id @default(autoincrement()) @db.UnsignedBigInt
-  parent_id      BigInt       @db.UnsignedBigInt
+  explorer_guardian_id BigInt  @db.UnsignedBigInt
   dni_type       IdType
   dni_type_other String?      @db.VarChar(255)
   dni            String       @db.VarChar(255)
@@ -88,16 +88,16 @@ model explorers {
   created_at     DateTime?     @db.Timestamp(0)
   updated_at     DateTime?     @db.Timestamp(0)
   deleted_at     DateTime?     @db.Timestamp(0)
-  parent         parents?      @relation(fields: [parent_id], references: [id], onDelete: Cascade)
+  explorer_guardian explorer_guardians? @relation(fields: [explorer_guardian_id], references: [id], onDelete: Cascade)
   enrollments    enrollments[]
   attendances    attendances[]
   explorer_session_lessons explorer_session_lessons[]
 
-  @@index([parent_id])
+  @@index([explorer_guardian_id])
   @@index([dni])
 }
 
-model parents {
+model explorer_guardians {
   id            BigInt      @id @default(autoincrement()) @db.UnsignedBigInt
   first_name    String     @db.VarChar(255)
   last_name     String     @db.VarChar(255)

@@ -22,6 +22,94 @@ router.get("/", isAuthenticated, isAuthorized("explorers", "read"), ExplorersCon
 
 /**
  * @swagger
+ * /api/explorers/guardians:
+ *   get:
+ *     summary: Listar acudientes de exploradores
+ *     tags: [Explorers]
+ *     security:
+ *       - bearerAuth: []
+ */
+router.get(
+  "/guardians",
+  isAuthenticated,
+  isAuthorized("explorers", "read"),
+  ExplorersController.findAllGuardians
+);
+
+/**
+ * @swagger
+ * /api/explorers/guardians/{id}:
+ *   get:
+ *     summary: Obtener acudiente por id
+ *     tags: [Explorers]
+ *     security:
+ *       - bearerAuth: []
+ */
+router.get(
+  "/guardians/:id",
+  isAuthenticated,
+  isAuthorized("explorers", "read"),
+  ExplorersValidator.idParam(),
+  validateRequest,
+  ExplorersController.findGuardianById
+);
+
+/**
+ * @swagger
+ * /api/explorers/guardians:
+ *   post:
+ *     summary: Crear acudiente
+ *     tags: [Explorers]
+ *     security:
+ *       - bearerAuth: []
+ */
+router.post(
+  "/guardians",
+  isAuthenticated,
+  isAuthorized("explorers", "create"),
+  ExplorersValidator.createGuardian(),
+  validateRequest,
+  ExplorersController.createGuardian
+);
+
+/**
+ * @swagger
+ * /api/explorers/guardians/{id}:
+ *   put:
+ *     summary: Actualizar acudiente
+ *     tags: [Explorers]
+ *     security:
+ *       - bearerAuth: []
+ */
+router.put(
+  "/guardians/:id",
+  isAuthenticated,
+  isAuthorized("explorers", "update"),
+  ExplorersValidator.updateGuardian(),
+  validateRequest,
+  ExplorersController.updateGuardian
+);
+
+/**
+ * @swagger
+ * /api/explorers/guardians/{id}:
+ *   delete:
+ *     summary: Eliminar acudiente
+ *     tags: [Explorers]
+ *     security:
+ *       - bearerAuth: []
+ */
+router.delete(
+  "/guardians/:id",
+  isAuthenticated,
+  isAuthorized("explorers", "delete"),
+  ExplorersValidator.idParam(),
+  validateRequest,
+  ExplorersController.removeGuardian
+);
+
+/**
+ * @swagger
  * /api/explorers/{id}:
  *   get:
  *     summary: Obtener explorador por id
@@ -42,7 +130,7 @@ router.get(
  * @swagger
  * /api/explorers:
  *   post:
- *     summary: Crear explorador
+ *     summary: Crear explorador con acudiente
  *     tags: [Explorers]
  *     security:
  *       - bearerAuth: []

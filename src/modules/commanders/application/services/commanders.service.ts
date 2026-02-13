@@ -1,5 +1,6 @@
 import { CommandersRepository } from "@/modules/commanders/infrastructure/repositories/commanders.repository";
 import { serializeBigInt } from "@/shared/infrastructure/utils/serializeBigInt";
+import { IdType, RecordStatus } from "@prisma/client";
 
 export class CommandersService {
   static async findAll() {
@@ -13,28 +14,60 @@ export class CommandersService {
     return { status: 200, message: "Comandante obtenido", data: serializeBigInt(commander) };
   }
 
-  static async create(body: any) {
+  static async create(body: {
+    dni: string;
+    dni_type: IdType;
+    dni_type_other?: string;
+    first_name: string;
+    last_name: string;
+    cell: string;
+    phone: string;
+    member_id?: string;
+    status?: RecordStatus;
+  }) {
+    const dniInUse = await CommandersRepository.findByDni(body.dni);
+    if (dniInUse) return { status: 409, message: "El comandante ya existe con ese DNI" };
+
     const created = await CommandersRepository.create({
       dni: body.dni,
+      dni_type: body.dni_type,
+      dni_type_other: body.dni_type_other,
       first_name: body.first_name,
       last_name: body.last_name,
-      email: body.email,
-      phone: body.phone
+      cell: body.cell,
+      phone: body.phone,
+      member_id: body.member_id,
+      status: body.status
     });
     return { status: 201, message: "Comandante creado", data: serializeBigInt(created) };
   }
 
-  static async update(id: string, body: any) {
-    const exists = await CommandersRepository.findById(BigInt(id));
+  static async update(
+    id: string,
+    body: {
+      dni?: string;
+      dni_type?: IdType;
+      dni_type_other?: string;
+      first_name?: string;
+      last_name?: string;
+      cell?: string;
+      phone?: string;
+      member_id?: string | null;
+      status?: RecordStatus;
+    }
+  ) {
+    const targetId = BigInt(id);
+    const exists = await CommandersRepository.findById(targetId);
     if (!exists) return { status: 404, message: "Comandante no encontrado" };
 
-    const updated = await CommandersRepository.update(BigInt(id), {
-      dni: body.dni,
-      first_name: body.first_name,
-      last_name: body.last_name,
-      email: body.email,
-      phone: body.phone
-    });
+    if (body.dni && body.dni !== exists.dni) {
+      const dniInUse = await CommandersRepository.findByDni(body.dni);
+      if (dniInUse && dniInUse.id !== targetId) {
+        return { status: 409, message: "El comandante ya existe con ese DNI" };
+      }
+    }
+
+    const updated = await CommandersRepository.update(targetId, body);
 
     return { status: 200, message: "Comandante actualizado", data: serializeBigInt(updated) };
   }
