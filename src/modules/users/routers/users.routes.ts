@@ -46,6 +46,25 @@ router.get(
  *     tags: [Users]
  *     security:
  *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [email, password]
+ *             properties:
+ *               email:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *               role_id:
+ *                 type: integer
+ *                 nullable: true
+ *           example:
+ *             email: "admin@club.com"
+ *             password: "Secreta123"
+ *             role_id: 1
  */
 router.post(
   "/",
@@ -64,6 +83,24 @@ router.post(
  *     tags: [Users]
  *     security:
  *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *               role_id:
+ *                 type: integer
+ *                 nullable: true
+ *           example:
+ *             email: "nuevo-correo@club.com"
+ *             password: "NuevaSecreta123"
+ *             role_id: 2
  */
 router.put(
   "/:id",

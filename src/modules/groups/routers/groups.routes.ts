@@ -43,6 +43,21 @@ router.get(
  *     tags: [Groups]
  *     security:
  *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [name]
+ *             properties:
+ *               name:
+ *                 type: string
+ *               is_explorer:
+ *                 type: boolean
+ *           example:
+ *             name: "Pioneros"
+ *             is_explorer: false
  */
 router.post(
   "/",
@@ -61,6 +76,20 @@ router.post(
  *     tags: [Groups]
  *     security:
  *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               is_explorer:
+ *                 type: boolean
+ *           example:
+ *             name: "Exploradores"
+ *             is_explorer: true
  */
 router.put(
   "/:id",

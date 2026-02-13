@@ -173,14 +173,13 @@ async function processRegularGroup(groupNode: DirectoryNode, groupId: bigint, gr
     }
 
     const pathRecord = await prisma.paths.upsert({
-      where: { code: pathCode },
+      where: { name: pathName.slice(0, 255) },
       update: {
         name: pathName.slice(0, 255),
         updated_at: now,
         deleted_at: null,
       },
       create: {
-        code: pathCode,
         name: pathName.slice(0, 255),
         created_at: now,
         updated_at: now,
@@ -204,8 +203,6 @@ async function processRegularGroup(groupNode: DirectoryNode, groupId: bigint, gr
           path_id: pathRecord.id,
           group_id: groupId,
           file_url: buildFileUrl(baseUrlArg, toPosix(lessonData.file.relativePath)),
-          source_file_name: lessonData.file.name,
-          source_relative_path: lessonData.file.relativePath,
           updated_at: now,
           deleted_at: null,
         },
@@ -217,8 +214,6 @@ async function processRegularGroup(groupNode: DirectoryNode, groupId: bigint, gr
           path_id: pathRecord.id,
           group_id: groupId,
           file_url: buildFileUrl(baseUrlArg, toPosix(lessonData.file.relativePath)),
-          source_file_name: lessonData.file.name,
-          source_relative_path: lessonData.file.relativePath,
           created_at: now,
           updated_at: now,
           deleted_at: null,
@@ -245,8 +240,6 @@ async function processExplorerGroup(groupNode: DirectoryNode, groupId: bigint, g
         path_id: null,
         group_id: groupId,
         file_url: buildFileUrl(baseUrlArg, sourcePath),
-        source_file_name: lessonData.file.name,
-        source_relative_path: sourcePath,
         updated_at: now,
         deleted_at: null,
       },
@@ -258,8 +251,6 @@ async function processExplorerGroup(groupNode: DirectoryNode, groupId: bigint, g
         path_id: null,
         group_id: groupId,
         file_url: buildFileUrl(baseUrlArg, sourcePath),
-        source_file_name: lessonData.file.name,
-        source_relative_path: sourcePath,
         created_at: now,
         updated_at: now,
         deleted_at: null,
@@ -282,7 +273,7 @@ async function main(): Promise<void> {
     const parsedGroup = parseGroup(groupNode.name);
 
     const groupRecord = await prisma.groups.upsert({
-      where: { code: parsedGroup.code },
+      where: { name: parsedGroup.name },
       update: {
         name: parsedGroup.name,
         is_explorer: parsedGroup.isExplorer,
@@ -290,7 +281,6 @@ async function main(): Promise<void> {
         deleted_at: null,
       },
       create: {
-        code: parsedGroup.code,
         name: parsedGroup.name,
         is_explorer: parsedGroup.isExplorer,
         created_at: now,

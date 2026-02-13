@@ -62,6 +62,36 @@ router.get(
  *     tags: [Explorers]
  *     security:
  *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [first_name, last_name, dni_type, dni, phone]
+ *             properties:
+ *               first_name:
+ *                 type: string
+ *               last_name:
+ *                 type: string
+ *               dni_type:
+ *                 type: string
+ *                 enum: [DNI, CE, TI, OTHER]
+ *               dni_type_other:
+ *                 type: string
+ *               dni:
+ *                 type: string
+ *               phone:
+ *                 type: string
+ *               member_id:
+ *                 type: string
+ *           example:
+ *             first_name: "Maria"
+ *             last_name: "Gomez"
+ *             dni_type: "DNI"
+ *             dni: "99988877"
+ *             phone: "3008887766"
+ *             member_id: "A-1001"
  */
 router.post(
   "/guardians",
@@ -80,6 +110,32 @@ router.post(
  *     tags: [Explorers]
  *     security:
  *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               first_name:
+ *                 type: string
+ *               last_name:
+ *                 type: string
+ *               dni_type:
+ *                 type: string
+ *                 enum: [DNI, CE, TI, OTHER]
+ *               dni_type_other:
+ *                 type: string
+ *               dni:
+ *                 type: string
+ *               phone:
+ *                 type: string
+ *               member_id:
+ *                 type: string
+ *                 nullable: true
+ *           example:
+ *             phone: "3010001122"
+ *             member_id: null
  */
 router.put(
   "/guardians/:id",
@@ -134,6 +190,67 @@ router.get(
  *     tags: [Explorers]
  *     security:
  *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [dni_type, dni, guardian]
+ *             properties:
+ *               dni_type:
+ *                 type: string
+ *                 enum: [DNI, CE, TI, OTHER]
+ *               dni_type_other:
+ *                 type: string
+ *               dni:
+ *                 type: string
+ *               member_id:
+ *                 type: string
+ *               phone:
+ *                 type: string
+ *               first_name:
+ *                 type: string
+ *               last_name:
+ *                 type: string
+ *               birthdate:
+ *                 type: string
+ *                 format: date
+ *               gender:
+ *                 type: string
+ *                 enum: [MASCULINO, FEMENINO]
+ *               guardian:
+ *                 type: object
+ *                 required: [first_name, last_name, dni_type, dni, phone]
+ *                 properties:
+ *                   first_name:
+ *                     type: string
+ *                   last_name:
+ *                     type: string
+ *                   dni_type:
+ *                     type: string
+ *                     enum: [DNI, CE, TI, OTHER]
+ *                   dni_type_other:
+ *                     type: string
+ *                   dni:
+ *                     type: string
+ *                   phone:
+ *                     type: string
+ *                   member_id:
+ *                     type: string
+ *           example:
+ *             dni_type: "TI"
+ *             dni: "10223344"
+ *             first_name: "Juan"
+ *             last_name: "Lopez"
+ *             birthdate: "2014-06-10"
+ *             gender: "MASCULINO"
+ *             guardian:
+ *               first_name: "Ana"
+ *               last_name: "Lopez"
+ *               dni_type: "DNI"
+ *               dni: "88997766"
+ *               phone: "3004445566"
  */
 router.post(
   "/",
@@ -152,6 +269,61 @@ router.post(
  *     tags: [Explorers]
  *     security:
  *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               dni_type:
+ *                 type: string
+ *                 enum: [DNI, CE, TI, OTHER]
+ *               dni_type_other:
+ *                 type: string
+ *               dni:
+ *                 type: string
+ *               member_id:
+ *                 type: string
+ *                 nullable: true
+ *               phone:
+ *                 type: string
+ *                 nullable: true
+ *               first_name:
+ *                 type: string
+ *               last_name:
+ *                 type: string
+ *               birthdate:
+ *                 type: string
+ *                 format: date
+ *                 nullable: true
+ *               gender:
+ *                 type: string
+ *                 enum: [MASCULINO, FEMENINO]
+ *                 nullable: true
+ *               guardian:
+ *                 type: object
+ *                 properties:
+ *                   first_name:
+ *                     type: string
+ *                   last_name:
+ *                     type: string
+ *                   dni_type:
+ *                     type: string
+ *                     enum: [DNI, CE, TI, OTHER]
+ *                   dni_type_other:
+ *                     type: string
+ *                   dni:
+ *                     type: string
+ *                   phone:
+ *                     type: string
+ *                   member_id:
+ *                     type: string
+ *                     nullable: true
+ *           example:
+ *             phone: "3201112233"
+ *             guardian:
+ *               phone: "3002223344"
  */
 router.put(
   "/:id",

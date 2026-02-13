@@ -43,6 +43,43 @@ router.get(
  *     tags: [Commanders]
  *     security:
  *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [dni, dni_type, first_name, last_name, cell, phone]
+ *             properties:
+ *               dni:
+ *                 type: string
+ *               dni_type:
+ *                 type: string
+ *                 enum: [DNI, CE, TI, OTHER]
+ *               dni_type_other:
+ *                 type: string
+ *               first_name:
+ *                 type: string
+ *               last_name:
+ *                 type: string
+ *               cell:
+ *                 type: string
+ *               phone:
+ *                 type: string
+ *               member_id:
+ *                 type: string
+ *               status:
+ *                 type: string
+ *                 enum: [ACTIVO, INACTIVO]
+ *           example:
+ *             dni: "12345678"
+ *             dni_type: "DNI"
+ *             first_name: "Carlos"
+ *             last_name: "Perez"
+ *             cell: "3001234567"
+ *             phone: "6011234567"
+ *             member_id: "M-2045"
+ *             status: "ACTIVO"
  */
 router.post(
   "/",
@@ -61,6 +98,37 @@ router.post(
  *     tags: [Commanders]
  *     security:
  *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               dni:
+ *                 type: string
+ *               dni_type:
+ *                 type: string
+ *                 enum: [DNI, CE, TI, OTHER]
+ *               dni_type_other:
+ *                 type: string
+ *               first_name:
+ *                 type: string
+ *               last_name:
+ *                 type: string
+ *               cell:
+ *                 type: string
+ *               phone:
+ *                 type: string
+ *               member_id:
+ *                 type: string
+ *                 nullable: true
+ *               status:
+ *                 type: string
+ *                 enum: [ACTIVO, INACTIVO]
+ *           example:
+ *             phone: "6017654321"
+ *             status: "ACTIVO"
  */
 router.put(
   "/:id",

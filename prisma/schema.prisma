@@ -57,7 +57,7 @@ model commanders {
   id         BigInt       @id @default(autoincrement()) @db.UnsignedBigInt
   dni        String      @db.VarChar(255)
   dni_type   IdType
-  dni_type_other String  @db.VarChar(255)
+  dni_type_other String? @db.VarChar(255)
   first_name String       @db.VarChar(255)
   cell       String      @db.VarChar(255)
   last_name  String      @db.VarChar(255)
@@ -102,7 +102,7 @@ model explorer_guardians {
   first_name    String     @db.VarChar(255)
   last_name     String     @db.VarChar(255)
   dni_type       IdType
-  dni_type_other String     @db.VarChar(255)
+  dni_type_other String?    @db.VarChar(255)
   dni            String      @db.VarChar(255)
   phone         String     @db.VarChar(255)
   member_id     String?     @db.VarChar(255)

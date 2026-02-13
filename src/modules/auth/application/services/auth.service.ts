@@ -1,10 +1,11 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { SignOptions } from "jsonwebtoken";
 import { AuthRepository } from "@/modules/auth/infrastructure/repositories/auth.repository";
 import { serializeBigInt } from "@/shared/infrastructure/utils/serializeBigInt";
 
 const JWT_SECRET = process.env.JWT_SECRET || "default_secret_change_this";
-const JWT_EXPIRATION = process.env.JWT_EXPIRATION || "24h";
+const JWT_EXPIRATION = (process.env.JWT_EXPIRATION || "24h") as SignOptions["expiresIn"];
 
 export class AuthService {
   static async register(email: string, password: string) {
